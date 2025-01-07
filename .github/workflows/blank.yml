@@ -16,6 +16,7 @@ jobs:
         with:
           webhookUrl: https://discord.com/api/webhooks/1326090386669572127/_ccJi99YPqQGq-es7-52RVHDzvbKOUz4fD9B-k8sCN1OKtDGOfcX5bPBbijS-lfjsn5-
           message: 안녕 나는 <@641603099038973974>야
+          username: 리뷰알림이 
 
       - name: Run a one-line script
         run: echo Hello, world!
