@@ -19,7 +19,7 @@ jobs:
             const requester = members.find(entry => entry.github === excludeMember);
             let outputString = '';
             for (const member of members) {
-              if ((member.githubId !== excludeMember)) {
+              if ((member.github !== excludeMember)) {
                 outputString += `<@${member.discord}> `;
               }
             }
