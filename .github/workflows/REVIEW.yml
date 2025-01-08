@@ -15,7 +15,7 @@ jobs:
         with:
           script: |
             const members = JSON.parse(${{secrets.DISCORD_ID}});
-            const reviewer = members.find(entry => entry.github == ${{ github.event.review.user.login }});
+            const reviewer = members.find(entry => entry.github === ${{ github.event.review.user.login }});
             console.log(`::set-output name=reviewer_name::${reviewer.discord}`);
             
       - name: Discord Message
