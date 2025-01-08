@@ -22,7 +22,7 @@ jobs:
         with:
           script: |
             const members = JSON.parse(${{secrets.DISCORD_ID}});
-            const reviewee = members.find(entry => entry.github === "koust6u");
+            const reviewee = members.find(entry => entry.github === context.payload.pull_request.user.login);
             const reviewer = members.find(entry => entry.github === ${{ github.event.review.user.login }});
             
             console.log(`::set-output name=reviewee_discord::${reviewee.discord}`);
