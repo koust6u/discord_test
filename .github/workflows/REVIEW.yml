@@ -1,10 +1,10 @@
 name: CI
 
 on:
-  pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:
-
+  pull_request_review:
+    branches: [ "BE/dev", "BE/test", "production", "main", "koust6u-patch-1" ]
+    types: [submitted]
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,16 +12,15 @@ jobs:
       - name: Extract receiver list
         id: extract_receiver_list
         uses: actions/github-script@v7.0.1
-        env:
-          DISCORD_ID: ${{ secrets.DISCORD_ID }}
         with:
           script: |
-            const members = JSON.parse(process.env.DISCORD_ID);
-            const reviewer = members.find(entry => entry.github === context.payload.review.user.login);
-            console.log(::set-output name=reviewer_discord::${reviewer.discord});
-
+            const members = JSON.parse(${{secrets.DISCORD_ID}});
+            const reviewer = members.find(entry => entry.github == ${{ github.event.review.user.login }});
+            console.log(`::set-output name=reviewer_name::${reviewer.discord}`);
+            
       - name: Discord Message
         uses: discord-actions/message@v2
         with:
           webhookUrl: https://discord.com/api/webhooks/1326090386669572127/_ccJi99YPqQGq-es7-52RVHDzvbKOUz4fD9B-k8sCN1OKtDGOfcX5bPBbijS-lfjsn5-
-          message:  "📬`<@${{steps.extract_receiver_list.outputs.reviewer_discord}}>`님📬 리뷰가 도착했어요. [리뷰 보로가기!](${{github.event.pull_request.html_url}})  \n"      
+          message:  "📬`<@${{steps.extract_receiver_list.outputs.reviewee_discord}}>`님📬 리뷰가 도착했어요. [리뷰 보로가기!](${{github.event.pull_request.html_url}})  \n 혼내준 사람: ${{steps.extract_receiver_list.outputs.reviewer_name}}_ \n"
+      
