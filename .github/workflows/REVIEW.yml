@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request_review:
+    branches: [ "BE/dev", "BE/test", "production", "main", "koust6u-patch-1" ]
+    types: [submitted]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract receiver list
+        id: extract_receiver_list
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            const includeMember = context.payload.pull_request.user.login;
+            const members = JSON.parse(${{secrets.DISCORD_ID}});
+            const requester = members.find(entry => entry.github === excludeMember);
+            const reviewer = members.find(entry => entry.github === ${{ github.event.review.user.login }});
+            let outputString = '';
+            for (const member of members) {
+              if ((member.github == includeMember)) {
+                outputString += `<@${member.discord}> `;
+              }
+            }
+            console.log(`::set-output name=names::${outputString.trim()}`);
+            console.log(`::set-output name=requester::${requester.name}`);
+            console.log(`::set-output name=reviewer::${reviewer.name}`);
+            
+      - name: Discord Message
+        uses: discord-actions/message@v2
+        with:
+          webhookUrl: https://discord.com/api/webhooks/1326090386669572127/_ccJi99YPqQGq-es7-52RVHDzvbKOUz4fD9B-k8sCN1OKtDGOfcX5bPBbijS-lfjsn5-
+          message:  "📬${{steps.extract_receiver_list.outputs.names}}님📬 리뷰가 도착했어요. [리뷰 보로가기!](${{github.event.pull_request.html_url}})  \n 혼내준 사람: ${{steps.extract_receiver_list.outputs.reviewer}}_ \n"
+      
