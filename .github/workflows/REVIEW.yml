@@ -9,9 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: test
+      - name: Print Event Payload
+        env:
+          EVENT_PAYLOAD: ${{ toJson(github.event) }}
         run: |
-          cat ${{ github.event}} | echo "$(cat)"
+          echo "Event Payload:"
+          echo "$EVENT_PAYLOAD"
           
       - name: Extract receiver list
         id: extract_receiver_list
