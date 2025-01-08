@@ -15,17 +15,7 @@ jobs:
         with:
           script: |
             const members = JSON.parse(${{secrets.DISCORD_ID}});
-            const revieweeGithub = context.payload.pull_request.user.login;
             const reviewer = members.find(entry => entry.github == ${{ github.event.review.user.login }});
-            let reviewee;
-            
-            for (const member of members) {
-              if ((member.github === revieweeGithub)) {
-                reviewee = member;
-              }
-            }
-            console.log(`::set-output name=reviewee_discord::${reviewee.discord}`);
-            console.log(`::set-output name=reviewee_name::${reviewee.name}`);
             console.log(`::set-output name=reviewer_name::${reviewer.name}`);
             
       - name: Discord Message
