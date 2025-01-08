@@ -21,7 +21,7 @@ jobs:
         uses: actions/github-script@v7.0.1
         with:
           script: |
-            const revieweeGithub = "JiHyeonL";
+            const revieweeGithub = context.payload.pull_request.user.login;
             const members = JSON.parse(${{secrets.DISCORD_ID}});
             const reviewee = members.find(entry => entry.github === revieweeGithub);
             const reviewer = members.find(entry => entry.github === ${{ github.event.review.user.login }});
