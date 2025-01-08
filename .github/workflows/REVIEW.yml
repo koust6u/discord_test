@@ -14,23 +14,17 @@ jobs:
         uses: actions/github-script@v7.0.1
         with:
           script: |
-            const includeMember = context.payload.pull_request.user.login;
             const members = JSON.parse(${{secrets.DISCORD_ID}});
-            const requester = members.find(entry => entry.github === excludeMember);
+            const reviewee = members.find(entry => entry.github === reviewee);
             const reviewer = members.find(entry => entry.github === ${{ github.event.review.user.login }});
-            let outputString = '';
-            for (const member of members) {
-              if ((member.github == includeMember)) {
-                outputString += `<@${member.discord}> `;
-              }
-            }
-            console.log(`::set-output name=names::${outputString.trim()}`);
-            console.log(`::set-output name=requester::${requester.name}`);
-            console.log(`::set-output name=reviewer::${reviewer.name}`);
+            
+            console.log(`::set-output name=reviewee_discord::${reviewee.discord}`);
+            console.log(`::set-output name=reviewee_name::${reviewee.name}`);
+            console.log(`::set-output name=reviewer_name::${reviewer.name}`);
             
       - name: Discord Message
         uses: discord-actions/message@v2
         with:
           webhookUrl: https://discord.com/api/webhooks/1326090386669572127/_ccJi99YPqQGq-es7-52RVHDzvbKOUz4fD9B-k8sCN1OKtDGOfcX5bPBbijS-lfjsn5-
-          message:  "📬${{steps.extract_receiver_list.outputs.names}}님📬 리뷰가 도착했어요. [리뷰 보로가기!](${{github.event.pull_request.html_url}})  \n 혼내준 사람: ${{steps.extract_receiver_list.outputs.reviewer}}_ \n"
+          message:  "📬${{steps.extract_receiver_list.outputs.reviewee_discord}}님📬 리뷰가 도착했어요. [리뷰 보로가기!](${{github.event.pull_request.html_url}})  \n 혼내준 사람: ${{steps.extract_receiver_list.outputs.reviewer_name}}_ \n"
       
