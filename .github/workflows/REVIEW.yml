@@ -18,7 +18,7 @@ jobs:
             const members = JSON.parse(${{secrets.DISCORD_ID}});
             const requester = members.find(entry => entry.github === excludeMember);
             console.log(`::set-output name=requester::${requester.discord}`);
-        
+            
       - name: Discord Message
         uses: discord-actions/message@v2
         with:
