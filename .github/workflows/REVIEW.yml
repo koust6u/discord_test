@@ -16,9 +16,14 @@ jobs:
           script: |
             const members = JSON.parse(${{secrets.DISCORD_ID}});
             const revieweeGithub = context.payload.pull_request.user.login;
-            const reviewee = members.find(entry => entry.github == revieweeGithub);
             const reviewer = members.find(entry => entry.github == ${{ github.event.review.user.login }});
+            let reviewee;
             
+            for (const member of members) {
+              if ((member.github === revieweeGithub)) {
+                reviewee = member;
+              }
+            }
             console.log(`::set-output name=reviewee_discord::${reviewee.discord}`);
             console.log(`::set-output name=reviewee_name::${reviewee.name}`);
             console.log(`::set-output name=reviewer_name::${reviewer.name}`);
@@ -27,5 +32,5 @@ jobs:
         uses: discord-actions/message@v2
         with:
           webhookUrl: https://discord.com/api/webhooks/1326090386669572127/_ccJi99YPqQGq-es7-52RVHDzvbKOUz4fD9B-k8sCN1OKtDGOfcX5bPBbijS-lfjsn5-
-          message:  "📬${{steps.extract_receiver_list.outputs.reviewee_discord}}님📬 리뷰가 도착했어요. [리뷰 보로가기!](${{github.event.pull_request.html_url}})  \n 혼내준 사람: ${{steps.extract_receiver_list.outputs.reviewer_name}}_ \n"
+          message:  "📬`<@${{steps.extract_receiver_list.outputs.reviewee_discord}}>`님📬 리뷰가 도착했어요. [리뷰 보로가기!](${{github.event.pull_request.html_url}})  \n 혼내준 사람: ${{steps.extract_receiver_list.outputs.reviewer_name}}_ \n"
       
