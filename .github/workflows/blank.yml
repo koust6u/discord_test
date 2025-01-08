@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
@@ -21,15 +19,16 @@ jobs:
             const requester = members.find(entry => entry.github === excludeMember);
             let outputString = '';
             for (const member of members) {
-              if ((member.githubId !== excludeMember)) {
+              if ((member.github !== excludeMember)) {
                 outputString += `<@${member.discord}> `;
               }
             }
             console.log(`::set-output name=names::${outputString.trim()}`);
+            console.log(`::set-output name=requester::${requester.name}`);
             
       - name: Discord Message
         uses: discord-actions/message@v2
         with:
           webhookUrl: https://discord.com/api/webhooks/1326090386669572127/_ccJi99YPqQGq-es7-52RVHDzvbKOUz4fD9B-k8sCN1OKtDGOfcX5bPBbijS-lfjsn5-
-          message: 안녕 나는 <@641603099038973974>야
+          message:  "👑${{steps.extract_receiver_list.outputs.requester}}👑 PR이 도착했습니다. \n↓↓↓\n\n⚡⚡⚡⚡⚡⚡⚡⚡⚡\n*⚡[${{steps.extract_receiver_list.outputs.requester}}](${{github.event.pull_request.html_url}}) 혼구멍 내러가기~>⚡* \n⚡⚡⚡⚡⚡⚡⚡⚡⚡\n\n _혼내줄 사람들: ${{steps.extract_receiver_list.outputs.names}}_ \n"
       
